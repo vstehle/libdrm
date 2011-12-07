@@ -56,6 +56,7 @@ struct omap_bo {
 	uint32_t	handle;
 	uint32_t	name;		/* flink global handle (DRI2 name) */
 	uint64_t	offset;		/* offset to mmap() */
+	int			fd;			/* dmabuf handle */
 };
 
 struct omap_device * omap_device_new(int fd)
@@ -252,6 +253,24 @@ int omap_bo_get_name(struct omap_bo *bo, uint32_t *name)
 uint32_t omap_bo_handle(struct omap_bo *bo)
 {
 	return bo->handle;
+}
+
+int omap_bo_dmabuf(struct omap_bo *bo)
+{
+	if (!bo->fd) {
+		struct drm_prime_handle req = {
+				.handle = bo->handle,
+		};
+		int ret;
+
+		ret = drmIoctl(bo->dev->fd, DRM_IOCTL_PRIME_SET, &req);
+		if (ret) {
+			return ret;
+		}
+
+		bo->fd = req.fd;
+	}
+	return bo->fd;
 }
 
 uint32_t omap_bo_size(struct omap_bo *bo)
