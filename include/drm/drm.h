@@ -467,12 +467,15 @@ struct drm_irq_busid {
 enum drm_vblank_seq_type {
 	_DRM_VBLANK_ABSOLUTE = 0x0,	/**< Wait for specific vblank sequence number */
 	_DRM_VBLANK_RELATIVE = 0x1,	/**< Wait for given number of vblanks */
+	/* bits 1-6 are reserved for high crtcs */
+	_DRM_VBLANK_HIGH_CRTC_MASK = 0x0000003e,
 	_DRM_VBLANK_EVENT = 0x4000000,   /**< Send event instead of blocking */
 	_DRM_VBLANK_FLIP = 0x8000000,   /**< Scheduled buffer swap should flip */
 	_DRM_VBLANK_NEXTONMISS = 0x10000000,	/**< If missed, wait for next vblank */
 	_DRM_VBLANK_SECONDARY = 0x20000000,	/**< Secondary display controller */
 	_DRM_VBLANK_SIGNAL = 0x40000000	/**< Send signal instead of blocking, unsupported */
 };
+#define _DRM_VBLANK_HIGH_CRTC_SHIFT 1
 
 #define _DRM_VBLANK_TYPES_MASK (_DRM_VBLANK_ABSOLUTE | _DRM_VBLANK_RELATIVE)
 #define _DRM_VBLANK_FLAGS_MASK (_DRM_VBLANK_EVENT | _DRM_VBLANK_SIGNAL | \
@@ -685,6 +688,9 @@ struct drm_prime_handle {
 #define DRM_IOCTL_UNLOCK		DRM_IOW( 0x2b, struct drm_lock)
 #define DRM_IOCTL_FINISH		DRM_IOW( 0x2c, struct drm_lock)
 
+#define DRM_IOCTL_PRIME_HANDLE_TO_FD    DRM_IOWR(0x2d, struct drm_prime_handle)
+#define DRM_IOCTL_PRIME_FD_TO_HANDLE    DRM_IOWR(0x2e, struct drm_prime_handle)
+
 #define DRM_IOCTL_AGP_ACQUIRE		DRM_IO(  0x30)
 #define DRM_IOCTL_AGP_RELEASE		DRM_IO(  0x31)
 #define DRM_IOCTL_AGP_ENABLE		DRM_IOW( 0x32, struct drm_agp_mode)
@@ -775,9 +781,10 @@ struct drm_event_vblank {
 };
 
 #define DRM_CAP_DUMB_BUFFER 0x1
-#define DRM_CAP_VBLANK_HIGH_CRTC   0x2
+#define DRM_CAP_VBLANK_HIGH_CRTC 0x2
 
 /* typedef area */
+#ifndef __KERNEL__
 typedef struct drm_clip_rect drm_clip_rect_t;
 typedef struct drm_drawable_info drm_drawable_info_t;
 typedef struct drm_tex_region drm_tex_region_t;
@@ -819,5 +826,6 @@ typedef struct drm_agp_binding drm_agp_binding_t;
 typedef struct drm_agp_info drm_agp_info_t;
 typedef struct drm_scatter_gather drm_scatter_gather_t;
 typedef struct drm_set_version drm_set_version_t;
+#endif
 
 #endif
