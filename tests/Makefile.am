@@ -10,6 +10,8 @@ check_PROGRAMS = \
 	dristat \
 	drmstat
 
+dristat_LDADD = $(CLOCK_LIB)
+
 SUBDIRS = modeprint proptest
 
 if HAVE_LIBKMS
