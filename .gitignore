@@ -85,3 +85,5 @@ tests/kmstest/kmstest
 tests/vbltest/vbltest
 tests/radeon/radeon_ttm
 man/*.3
+tests/proptest/proptest
+tags
